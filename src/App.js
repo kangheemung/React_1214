@@ -1,31 +1,47 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
-import React,{useState} from 'react' 
 
 function App() {
-  const [todoList,setTodoList] = useState([]);
-  const [newTask,setNewTask] = useState("");
- 
-  const handleChange=(event)=>{
-    setNewTask(event.target.value);
-  }
-   const addTask = () => {
-    const newTodoList=[...todoList,newTask];
-    setTodoList(newTodoList);
-  };
-  return (
-    <div className="App">
-      <header className="App-header">
-        <input　onChange = {handleChange}/>
-        <button onClick = {addTask}>クリックして！</button>
-      </header>
-      <div className="text">
-      {todoList.map((task) =>{
-        return <h1 className="text">{task}</h1>;
-      })}
-      </div>
-    </div>
-  );
-}
+    const [todoList, setTodoList] = useState([]);
+    const [newTask, setNewTask] = useState("");
+    
+    const handleChange = (event) => {
+      setNewTask(event.target.value);
+    };
+
+    const addTask = () => {
+        if(newTask !== "") {
+            const task = {
+                id: todoList.length === 0 ? 1 : todoList[todoList.length -1].id + 1,
+                taskName: newTask,
+            };
+            setTodoList([...todoList, task]);
+            setNewTask(""); // Reset input field after adding task
+        }
+    };
+
+    const deleteTask = (taskIdToDelete) => {
+        setTodoList(todoList.filter((task) => task.id !== taskIdToDelete));
+    };
+    
+    return (
+        <div className="App">
+          <header className="App-header">
+            <input value={newTask} onChange={handleChange} />
+            <button onClick={addTask}>Add Task</button>
+          </header>
+          <div className="text">
+            {todoList.map((task) => {
+                return (
+                  <div key={task.id}>
+                    <h1>{task.taskName}</h1>
+                    <button onClick={() => deleteTask(task.id)}>XP</button>
+                  </div>
+                );
+            })}
+          </div>
+        </div>
+    );
+};
 
 export default App;
